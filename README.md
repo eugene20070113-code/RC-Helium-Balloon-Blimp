@@ -33,16 +33,26 @@ The ESP32-C3 GND, DRV8833 GND, and battery negative must share the same ground.
 
 The current firmware tests the motors in this order:
 
-1. Left motor forward for 0.5 seconds
+1. Forward: both motors run forward with the same thrust for 1.5 seconds
 2. Stop for 2 seconds
-3. Left motor backward for 0.5 seconds
+3. Backward: both motors run backward with the same thrust for 1.5 seconds
 4. Stop for 2 seconds
-5. Right motor forward for 0.5 seconds
+5. Turn left: left motor runs weaker, right motor runs stronger for 1.5 seconds
 6. Stop for 2 seconds
-7. Right motor backward for 0.5 seconds
+7. Turn right: left motor runs stronger, right motor runs weaker for 1.5 seconds
 8. Stop for 3 seconds
 
+The test uses PWM speed values from `0` to `255`:
+
+- Cruise speed: `150`
+- Slow turn-side speed: `80`
+- Fast turn-side speed: `170`
+
 Do not install propellers during the first test.
+
+## Progress Reports
+
+- [2026-05-22 Differential Motor Test](docs/progress-2026-05-22.md)
 
 ## PlatformIO
 
