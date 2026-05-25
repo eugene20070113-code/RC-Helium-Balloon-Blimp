@@ -81,6 +81,7 @@ const int TURN_FAST_SPEED = 170;
 
 ### Progress Reports
 
+- [2026-05-26 Current Progress Report](docs/progress-2026-05-26.md)
 - [2026-05-22 Differential Motor Test](docs/progress-2026-05-22.md)
 
 ### PlatformIO / VS Code
