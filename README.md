@@ -396,3 +396,35 @@ const int TURN_FAST_SPEED = 170;
 相同邏輯也有 Arduino IDE 版本：
 
 `arduino/sketch_may14a/sketch_may14a.ino`
+
+---
+
+## 📄 License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+---
+
+## 📞 Contact & Support
+
+If you have any technical questions or suggestions, please contact us through:
+- 📧 Email: eugene20070113@gmail.com
+- 💬 Issues: [GitHub Issues](https://github.com/eugene20070113-code/RC-Helium-Balloon-Blimp/issues)
+
+---
+
+## 📄 授權條款
+
+本專案採用 MIT License 授權 - 詳見 [LICENSE](LICENSE) 文件。
+
+---
+
+## 📞 聯絡與支援
+
+如有技術問題或建議，請通過以下方式聯絡：
+- 📧 Email: eugene20070113@gmail.com
+- 💬 Issues: [GitHub Issues](https://github.com/eugene20070113-code/RC-Helium-Balloon-Blimp/issues)
+
+---
+
+**Last Updated**: 2026年8月29日
