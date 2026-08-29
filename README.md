@@ -271,6 +271,8 @@ If you have any technical questions or suggestions, please contact us through:
 - 💬 Issues: [GitHub Issues](https://github.com/eugene20070113-code/RC-Helium-Balloon-Blimp/issues)
 
 
+---
+
 ## 中文
 
 ### 專案簡介
@@ -394,7 +396,6 @@ const int TURN_FAST_SPEED = 170;
 
 `arduino/sketch_may14a/sketch_may14a.ino`
 
-**最後更新**：2026年8月29日
 
 ---
 
