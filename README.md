@@ -8,12 +8,23 @@ This project is an ESP32-C3 SuperMini based helium blimp motor-control prototype
 
 ### Hardware
 
+#### Control Electronics
 - ESP32-C3 SuperMini
 - DRV8833 motor driver module
-- Two 720 coreless motors
-- 104 ceramic capacitors
-- 100uF electrolytic capacitor
 - External motor battery
+
+#### Motors and Propulsion
+- Two 720 coreless motors
+- Orbz balloon (structural body)
+- Helium (lifting gas)
+
+#### Protection Components
+- 104 ceramic capacitors (2x)
+- 100uF electrolytic capacitor
+
+#### Remote Control Options
+- **Option 1**: Smartphone via Dabble app (Bluetooth)
+- **Option 2**: ESP32 + Mushroom joystick transmitter
 
 ### Wiring
 
@@ -48,6 +59,21 @@ The ESP32-C3 GND, DRV8833 GND, and motor battery negative must share the same gr
 | 100uF electrolytic capacitor | Between DRV8833 VCC and GND | Stabilize motor power |
 
 The 104 ceramic capacitors do not have polarity. The 100uF electrolytic capacitor has polarity: positive to DRV8833 VCC and negative to DRV8833 GND.
+
+### Remote Control
+
+The blimp supports two wireless control methods:
+
+#### Method 1: Smartphone (Dabble App)
+- Uses Bluetooth wireless connection
+- Control via mobile device running Dabble app
+- Suitable for quick testing and demonstrations
+
+#### Method 2: ESP32 + Mushroom Joystick
+- Uses a separate ESP32 transmitter with mushroom joystick
+- Direct wireless control between two ESP32 boards
+- More ergonomic for extended flying sessions
+- Better range and reliability for field operations
 
 ### Current Test Program
 
@@ -105,12 +131,23 @@ The same logic is also available in the Arduino IDE sketch:
 
 ### 使用硬體
 
+#### 控制電子元件
 - ESP32-C3 SuperMini
 - DRV8833 馬達驅動模組
-- 兩顆 720 空心杯馬達
-- 104 陶瓷電容
-- 100uF 電解電容
 - 外接馬達電池
+
+#### 馬達與推進系統
+- 兩顆 720 空心杯馬達
+- Orbz 氣球（結構體）
+- 氦氣（升力氣體）
+
+#### 保護元件
+- 104 陶瓷電容 (2個)
+- 100uF 電解電容
+
+#### 遙控方式
+- **方案 1**：手機 Dabble app 遙控（藍牙無線）
+- **方案 2**：ESP32 + 蘑菇搖桿遙控
 
 ### 接線
 
@@ -145,6 +182,21 @@ ESP32-C3 的 GND、DRV8833 的 GND、馬達電池負極必須接在一起，也�
 | 100uF 電解電容 | 接在 DRV8833 VCC 與 GND 之間 | 穩定馬達電源 |
 
 104 陶瓷電容沒有正負極。100uF 電解電容有正負極，正極接 DRV8833 VCC，負極接 DRV8833 GND。
+
+### 遙控控制
+
+飛船支援兩種無線控制方式：
+
+#### 方案 1：手機 Dabble App
+- 使用藍牙無線連接
+- 透過執行 Dabble app 的手機進行控制
+- 適合快速測試與演示
+
+#### 方案 2：ESP32 + 蘑菇搖桿
+- 使用另一塊 ESP32 搭配蘑菇搖桿作為發射器
+- 兩塊 ESP32 之間的直接無線控制
+- 操作更符合人體工學，適合長時間飛行
+- 可提供更好的控制距離與可靠性
 
 ### 目前測試程式
 
