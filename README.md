@@ -256,6 +256,21 @@ The same logic is also available in the Arduino IDE sketch:
 
 `arduino/sketch_may14a/sketch_may14a.ino`
 
+---
+
+## 📄 License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+---
+
+## 📞 Contact & Support
+
+If you have any technical questions or suggestions, please contact us through:
+- 📧 Email: eugene20070113@gmail.com
+- 💬 Issues: [GitHub Issues](https://github.com/eugene20070113-code/RC-Helium-Balloon-Blimp/issues)
+
+
 ## 中文
 
 ### 專案簡介
@@ -281,10 +296,6 @@ The same logic is also available in the Arduino IDE sketch:
 #### 遙控方式
 - **方案 1**：手機 Dabble app 遙控（藍牙無線）
 - **方案 2**：ESP32 + 蘑菇搖桿遙控
-
----
-
-**最後更新**：2026年8月29日
 
 ### 接線
 
@@ -383,19 +394,7 @@ const int TURN_FAST_SPEED = 170;
 
 `arduino/sketch_may14a/sketch_may14a.ino`
 
----
-
-## 📄 License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
----
-
-## 📞 Contact & Support
-
-If you have any technical questions or suggestions, please contact us through:
-- 📧 Email: eugene20070113@gmail.com
-- 💬 Issues: [GitHub Issues](https://github.com/eugene20070113-code/RC-Helium-Balloon-Blimp/issues)
+**最後更新**：2026年8月29日
 
 ---
 
