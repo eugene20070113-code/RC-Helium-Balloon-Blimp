@@ -282,6 +282,24 @@ The same logic is also available in the Arduino IDE sketch:
 - **方案 1**：手機 Dabble app 遙控（藍牙無線）
 - **方案 2**：ESP32 + 蘑菇搖桿遙控
 
+---
+
+## 📄 License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+---
+
+## 📞 聯絡與支援
+
+如有技術問題或建議，請通過以下方式聯絡：
+- 📧 Email: eugene20070113@gmail.com
+- 💬 Issues: [GitHub Issues](https://github.com/eugene20070113-code/RC-Helium-Balloon-Blimp/issues)
+
+---
+
+**最後更新**：2026年8月29日
+
 ### 接線
 
 #### ESP32-C3 接 DRV8833
