@@ -1,12 +1,37 @@
 # RC-Helium-Balloon-Blimp
 
-## English
+ESP32-C3 SuperMini based RC helium balloon blimp prototype. This project uses a DRV8833 motor driver to control two 720 coreless motors, and uses the Dabble mobile app GamePad module as the Bluetooth remote controller.
 
-### Project Overview
+The current stage focuses on making the blimp move smoothly by using differential thrust. The left and right motors can run forward, backward, and at different speeds, allowing straight movement and wide-radius turning.
 
-This project is an ESP32-C3 SuperMini based helium blimp motor-control prototype. It uses a DRV8833 motor driver to control two 720 coreless motors. The two motors are placed on the left and right sides of the blimp, allowing forward movement, backward movement, and turning through differential thrust.
+## Current Status
 
-### Hardware
+| Item | Current Setting |
+| --- | --- |
+| Main controller | ESP32-C3 SuperMini |
+| Motor driver | DRV8833 |
+| Motors | Two 720 coreless motors |
+| Remote-control app | Dabble |
+| Dabble module | GamePad |
+| Bluetooth device name | `Innovation_Balloon` |
+| Development environment | VS Code + PlatformIO |
+| PlatformIO environment | `esp32-c3-supermini` |
+| Main firmware file | `src/main.cpp` |
+| Arduino sketch copies | `sketch_may14a.ino`, `arduino/sketch_may14a/sketch_may14a.ino` |
+
+## Main Design Idea
+
+The blimp uses two side motors instead of a steering rudder. Movement is controlled by changing the thrust of the left and right motors:
+
+- Forward: both motors push forward at the same speed.
+- Backward: both motors reverse at the same speed.
+- Left turn: right motor runs faster than the left motor.
+- Right turn: left motor runs faster than the right motor.
+- Arc movement: forward or backward movement is combined with left/right turning.
+
+This turning method is more suitable for a helium blimp because it avoids sudden in-place spinning. The current firmware uses wide-radius turns so the motion is smoother and easier to control.
+
+## Hardware List
 
 #### Control Electronics
 - ESP32-C3 SuperMini
@@ -28,37 +53,66 @@ This project is an ESP32-C3 SuperMini based helium blimp motor-control prototype
 
 ### Wiring
 
-#### ESP32-C3 to DRV8833
+### 1. Power Center and Main Switch
 
-| ESP32-C3 SuperMini | DRV8833 | Description |
+The battery first goes through the slide switch, then enters the breadboard power rail. This makes the switch the main power control for the whole system.
+
+| Wire / Pin | Destination | Purpose |
 | --- | --- | --- |
-| GPIO4 | IN1 | Left motor control 1 |
-| GPIO5 | IN2 | Left motor control 2 |
-| GPIO6 | IN3 | Right motor control 1 |
-| GPIO7 | IN4 | Right motor control 2 |
-| 3V3 | EEP | Enable DRV8833 |
-| GND | GND | Shared ground |
+| Battery black wire / negative | Breadboard blue GND rail | Common ground |
+| Battery red wire / positive | Center pin of the 3-pin slide switch | Power input to switch |
+| Left or right output pin of slide switch | Breadboard red VCC rail | Switched power output |
 
-#### Motor and Power
+After this step, the breadboard red rail is the main `VCC`, and the blue rail is the main `GND`.
 
-| DRV8833 | Connection |
+### 2. ESP32-C3 SuperMini Power
+
+| ESP32-C3 SuperMini | Destination | Note |
+| --- | --- | --- |
+| 5V | Breadboard red VCC rail | Use this pin for the current wiring |
+| GND | Breadboard blue GND rail | Shared ground |
+
+Important: do not connect the main power rail to the ESP32-C3 `3V3` pin. The current wiring plan powers the board through `5V`.
+
+### 3. DRV8833 Power and Enable
+
+| DRV8833 Pin | Destination | Purpose |
+| --- | --- | --- |
+| VCC | Breadboard red VCC rail | Motor driver power |
+| GND | Breadboard blue GND rail | Shared ground |
+| EEP | Breadboard red VCC rail | Enable / wake line |
+
+The `EEP` pin must be connected to VCC. If `EEP` is not connected, the DRV8833 may stay disabled and the motors will not run even if the signal wires are correct.
+
+### 4. ESP32-C3 to DRV8833 Signal Wiring
+
+| ESP32-C3 GPIO | DRV8833 Input | Firmware Constant | Motor Side |
+| --- | --- | --- | --- |
+| GPIO4 | IN1 | `IN1` | Left motor forward side |
+| GPIO5 | IN2 | `IN2` | Left motor backward side |
+| GPIO6 | IN3 | `IN3` | Right motor forward side |
+| GPIO7 | IN4 | `IN4` | Right motor backward side |
+
+The firmware uses `analogWrite()` on these pins to control motor speed through PWM.
+
+### 5. Motor Output Wiring
+
+| Motor | DRV8833 Output |
 | --- | --- |
-| VCC | Motor battery positive |
-| GND | Motor battery negative |
-| OUT1, OUT2 | Left motor |
-| OUT3, OUT4 | Right motor |
+| Left 720 coreless motor | OUT1 and OUT2 |
+| Right 720 coreless motor | OUT3 and OUT4 |
 
-The ESP32-C3 GND, DRV8833 GND, and motor battery negative must share the same ground.
+If one motor spins in the wrong direction, swap the two wires of that motor on the DRV8833 output. If both motors move backward when pressing forward, the direction can also be corrected in firmware.
 
-### Capacitors
+## Capacitors and Protection
 
-| Component | Placement | Purpose |
-| --- | --- | --- |
-| 104 ceramic capacitor | Across the left motor terminals | Reduce motor noise |
-| 104 ceramic capacitor | Across the right motor terminals | Reduce motor noise |
-| 100uF electrolytic capacitor | Between DRV8833 VCC and GND | Stabilize motor power |
+| Component | Placement | Polarity | Purpose |
+| --- | --- | --- | --- |
+| 100uF electrolytic capacitor | Near DRV8833, between VCC and GND rails | Long leg to VCC, short leg / stripe side to GND | Helps stabilize motor power |
+| 104 ceramic capacitor | Across the left motor terminals | No polarity | Reduces motor electrical noise |
+| 104 ceramic capacitor | Across the right motor terminals | No polarity | Reduces motor electrical noise |
 
-The 104 ceramic capacitors do not have polarity. The 100uF electrolytic capacitor has polarity: positive to DRV8833 VCC and negative to DRV8833 GND.
+The 720 coreless motors can create electrical noise and sudden current changes. The capacitors help reduce noise and make the power supply more stable, especially when the motors start moving.
 
 ### Remote Control
 
@@ -77,39 +131,118 @@ The blimp supports two wireless control methods:
 
 ### Current Test Program
 
-The current firmware tests the motors in this order:
+### Bluetooth Control
 
-1. Forward: both motors run forward at speed `150` for 1.5 seconds.
-2. Stop for 2 seconds.
-3. Backward: both motors run backward at speed `150` for 1.5 seconds.
-4. Stop for 2 seconds.
-5. Turn left: left motor runs at speed `80`, right motor runs at speed `170` for 1.5 seconds.
-6. Stop for 2 seconds.
-7. Turn right: left motor runs at speed `170`, right motor runs at speed `80` for 1.5 seconds.
-8. Stop for 3 seconds, then repeat.
-
-### PWM Speed Settings
-
-The test uses PWM speed values from `0` to `255`.
+The firmware uses Dabble ESP32 with custom settings enabled:
 
 ```cpp
-const int CRUISE_SPEED = 150;
-const int TURN_SLOW_SPEED = 80;
-const int TURN_FAST_SPEED = 170;
+#define CUSTOM_SETTINGS
+#define INCLUDE_GAMEPAD_MODULE
+#include <DabbleESP32.h>
 ```
 
-### Safety Notes
+The Bluetooth name shown in the Dabble app is:
 
-- Do not install propellers during early bench tests.
-- Disconnect the motor battery after confirming the test sequence.
-- Do not leave the test program running continuously for a long time.
-- If the driver, motor, or battery becomes hot, disconnect power immediately.
+```cpp
+Dabble.begin("Innovation_Balloon");
+```
 
-### Progress Reports
+### Speed Settings
 
+```cpp
+const int CRUISE_SPEED = 255;
+const int TURN_FAST_SPEED = 255;
+const int TURN_SLOW_SPEED = 120;
+const int RAMP_SPEED = 15;
+```
+
+| Constant | Meaning |
+| --- | --- |
+| `CRUISE_SPEED` | Speed used for straight forward/backward movement |
+| `TURN_FAST_SPEED` | Speed of the outside motor during turning |
+| `TURN_SLOW_SPEED` | Speed of the inside motor during turning |
+| `RAMP_SPEED` | Maximum speed change per loop cycle |
+
+PWM speed values range from `0` to `255`.
+
+### Soft-Start / Smooth Acceleration
+
+The firmware does not immediately jump from `0` to full speed. Instead, it stores the current motor speed in:
+
+```cpp
+int currentLeftSpeed = 0;
+int currentRightSpeed = 0;
+```
+
+The `drive()` function gradually moves the current speed toward the target speed by `RAMP_SPEED`. This reduces sudden motor startup current and helps prevent ESP32-C3 resets caused by voltage drops.
+
+### Control Behavior
+
+| Dabble GamePad Input | Left Motor | Right Motor | Blimp Movement |
+| --- | --- | --- | --- |
+| Up | Forward fast | Forward fast | Straight forward |
+| Down | Backward fast | Backward fast | Straight backward |
+| Left | Forward slow | Forward fast | Wide left turn |
+| Right | Forward fast | Forward slow | Wide right turn |
+| Up + Left | Forward slow | Forward fast | Forward left arc |
+| Up + Right | Forward fast | Forward slow | Forward right arc |
+| Down + Left | Backward slow | Backward fast | Backward left arc |
+| Down + Right | Backward fast | Backward slow | Backward right arc |
+| No button | Ramps down to 0 | Ramps down to 0 | Smooth stop |
+
+## PlatformIO / VS Code
+
+This project is configured for VS Code with PlatformIO.
+
+| Setting | Value |
+| --- | --- |
+| PlatformIO environment | `esp32-c3-supermini` |
+| Board | `esp32-c3-devkitm-1` |
+| Framework | Arduino |
+| Upload port | `COM10` |
+| Monitor port | `COM10` |
+| Monitor speed | `115200` |
+
+Build command:
+
+```powershell
+C:\Users\01034\.platformio\penv\Scripts\pio.exe run
+```
+
+The latest build result was successful.
+
+## Testing Checklist
+
+1. Confirm the battery negative line is connected to the breadboard GND rail.
+2. Confirm the battery positive line goes through the slide switch before reaching the VCC rail.
+3. Confirm ESP32-C3 uses `5V` and `GND`.
+4. Confirm DRV8833 `VCC`, `GND`, and `EEP` are connected.
+5. Confirm GPIO4, GPIO5, GPIO6, and GPIO7 match IN1, IN2, IN3, and IN4.
+6. Confirm the 100uF capacitor polarity is correct.
+7. Confirm each 104 capacitor is soldered across the motor terminals.
+8. Upload the firmware.
+9. Open Dabble and connect to `Innovation_Balloon`.
+10. Test without propellers first.
+11. Press each direction button briefly and confirm the motor direction.
+
+## Troubleshooting
+
+| Problem | Possible Cause | Fix |
+| --- | --- | --- |
+| Motors do not move | DRV8833 `EEP` not connected | Connect `EEP` to VCC |
+| ESP32-C3 resets when motors start | Motor startup current causes voltage drop | Check capacitor, battery strength, and lower speed/ramp settings |
+| One motor spins backward | Motor output wires reversed | Swap the two wires of that motor |
+| Left/right control feels reversed | Motor side or output direction is reversed | Swap motor wires or adjust firmware |
+| Dabble cannot find the board | Bluetooth not started or wrong board powered | Check ESP32-C3 power and look for `Innovation_Balloon` |
+| Upload fails | Wrong COM port | Check Device Manager or PlatformIO port setting |
+
+## Progress Reports
+
+- [2026-05-29 Dabble Remote Control and Final Wiring](docs/progress-2026-05-29.md)
+- [2026-05-26 Current Progress Report](docs/progress-2026-05-26.md)
 - [2026-05-22 Differential Motor Test](docs/progress-2026-05-22.md)
 
-### PlatformIO / VS Code
+## Safety Notes
 
 This project can be opened in VS Code with PlatformIO.
 
